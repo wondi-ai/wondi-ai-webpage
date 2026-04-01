@@ -338,13 +338,14 @@
     .founder-photo {
       width: 100%;
       height: 280px;
-      background: var(--warm-gray);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #B0B0A8;
-      font-size: 14px;
-      font-weight: 500;
+      overflow: hidden;
+    }
+
+    .founder-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
 
     .founder-info {
@@ -399,8 +400,15 @@
       width: 48px;
       height: 48px;
       border-radius: 50%;
-      background: var(--warm-gray);
+      overflow: hidden;
       flex-shrink: 0;
+    }
+
+    .ext-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
 
     .ext-info {
@@ -801,7 +809,7 @@
       <div class="founders-grid fade-up">
         <!-- Gun Ahn -->
         <div class="founder-card">
-          <div class="founder-photo">Photo placeholder</div>
+          <div class="founder-photo"><img src="img/gun-ahn.png" alt="Gun Ahn"></div>
           <div class="founder-info">
             <div class="founder-name">Gun Ahn</div>
             <div class="founder-title">Co-Founder · MIT PhD Candidate '26</div>
@@ -811,7 +819,7 @@
         </div>
         <!-- Tomas Guiloff -->
         <div class="founder-card">
-          <div class="founder-photo">Photo placeholder</div>
+          <div class="founder-photo"><img src="img/tomas-guiloff.png" alt="Tomas Guiloff"></div>
           <div class="founder-info">
             <div class="founder-name">Tomas Guiloff</div>
             <div class="founder-title">Co-Founder · MIT MBA '26</div>
@@ -821,7 +829,7 @@
         </div>
         <!-- MD. Jungjin Kim -->
         <div class="founder-card">
-          <div class="founder-photo">Photo placeholder</div>
+          <div class="founder-photo"><img src="img/jungjin-kim.png" alt="MD. Jungjin Kim"></div>
           <div class="founder-info">
             <div class="founder-name">MD. Jungjin Kim</div>
             <div class="founder-title">Co-Founder · MIT EMBA '27</div>
@@ -841,7 +849,7 @@
       </div>
       <div class="extended-grid fade-up">
         <div class="ext-member">
-          <div class="ext-avatar"></div>
+          <div class="ext-avatar"><img src="img/shreyas-krishnan.png" alt="Shreyas Krishnan"></div>
           <div class="ext-info">
             <div class="ext-name">Shreyas Krishnan</div>
             <div class="ext-role">Building The Core Detection And Scoring Infrastructure.</div>
@@ -849,7 +857,7 @@
           </div>
         </div>
         <div class="ext-member">
-          <div class="ext-avatar"></div>
+          <div class="ext-avatar"><img src="img/laurie-wang.png" alt="Laurie Wang"></div>
           <div class="ext-info">
             <div class="ext-name">Laurie Wang</div>
             <div class="ext-role">ML Systems And API Development For Real-Time Conversation Analysis.</div>
@@ -857,7 +865,7 @@
           </div>
         </div>
         <div class="ext-member">
-          <div class="ext-avatar"></div>
+          <div class="ext-avatar"><img src="img/jesus-avendano.png" alt="Jesus Avendaño"></div>
           <div class="ext-info">
             <div class="ext-name">Jesus Avendano</div>
             <div class="ext-role">Designing The Developer Experience And Platform Interfaces.</div>
