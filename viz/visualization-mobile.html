@@ -13,17 +13,16 @@
     --chat-ai-bg: #f0f0ee; --chat-border: #e5e5e0; --chat-text: #1a1a1a; --chat-meta: #888;
   }
   html, body {
-    background: #f8f8f7; font-family: 'Inter', sans-serif;
-    min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; padding: 0; margin: 0;
-    overflow: hidden;
+    background: var(--panel-light); font-family: 'Inter', sans-serif;
+    margin: 0; padding: 0; overflow: hidden;
   }
   .phone {
-    width: 100%; max-width: 100%; overflow: hidden;
+    width: 100%; overflow: hidden;
     background: var(--panel-light); display: flex; flex-direction: column;
   }
   .panel-bar { flex-shrink: 0; display: flex; align-items: center; gap: 6px; padding: 8px 14px; }
   .panel-bar.light { background: #fff; border-bottom: 1px solid var(--chat-border); }
-  .panel-bar.dark  { background: rgba(255,255,255,0.025); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .panel-bar.dark  { background: rgba(19,21,26,1); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
   .dots { display: flex; gap: 5px; }
   .dot { width: 8px; height: 8px; border-radius: 50%; }
   .dot-r { background: #ff5f57; } .dot-y { background: #febc2e; } .dot-g { background: #28c840; }
@@ -31,7 +30,7 @@
   .panel-bar.light .bar-title { color: var(--chat-meta); }
   .panel-bar.dark  .bar-title { color: var(--grey); }
   .chat-panel {
-    flex-shrink: 0; min-height: 300px; background: var(--panel-light);
+    flex-shrink: 0; background: var(--panel-light);
     padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; overflow: hidden;
   }
   .msg {
@@ -44,19 +43,17 @@
   .msg.user .msg-bubble { background: #fff; border: 1px solid var(--chat-border); border-radius: 11px 11px 11px 3px; align-self: flex-start; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
   .msg.ai .msg-bubble   { background: var(--chat-ai-bg); border: 1px solid var(--chat-border); border-radius: 11px 11px 3px 11px; align-self: flex-end; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
   .msg.ai .msg-label { text-align: right; }
-  .json-panel { flex: 1; min-height: 0; background: var(--panel-dark); display: flex; flex-direction: column; overflow: hidden; }
-  .json-area  { flex: 1; padding: 10px 14px 8px; font-family: 'JetBrains Mono', monospace; font-size: 9px; line-height: 1.62; overflow: hidden; color: var(--white); }
-  .jl  { display: block; white-space: pre; }
+  .json-panel { background: var(--panel-dark); display: flex; flex-direction: column; overflow: hidden; }
+  .json-area  { padding: 10px 12px 8px; font-family: 'JetBrains Mono', monospace; font-size: 8px; line-height: 1.62; overflow: hidden; color: var(--white); }
+  .jl  { display: block; white-space: pre-wrap; word-break: break-all; }
   .jk  { color: #79c0ff; } .js  { color: #a5d6ff; } .jn  { color: #ffa657; }
   .jb  { color: #ff7b72; } .jp  { color: #8b949e; } .ja  { color: #f59e0b; } .jgr { color: #636e7b; }
-  .home-bar  { display: none; }
-  .home-pill { display: none; }
 </style>
 </head>
 <body>
 <div class="phone">
   <div class="panel-bar light">
-    <div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+    <div class="dots"><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
     <span class="bar-title">User conversation</span>
   </div>
   <div class="chat-panel">
@@ -68,11 +65,10 @@
     <div class="msg ai"   id="m6"><span class="msg-label">AI</span><div class="msg-bubble">It sounds like you've been carrying a lot lately. Before anything else — how are you actually doing?</div></div>
   </div>
   <div class="panel-bar dark">
-    <div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+    <div class="dots"><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
     <span class="bar-title">wondi_analysis · live output</span>
   </div>
   <div class="json-panel"><div class="json-area" id="json-area"></div></div>
-  <div class="home-bar"><div class="home-pill"></div></div>
 </div>
 <script>
 function renderJSON(n) {
@@ -86,48 +82,51 @@ function renderJSON(n) {
   if(n>=3) re.push(['msg_3','0.52',false]);
   if(n>=5) re.push(['msg_5','0.78',true]);
   const rH = re.map(([k,v,a],i)=>{
-    const c=i<re.length-1?'<span class="jp">,</span>':'';
-    return `        <span class="jk">"${k}"</span><span class="jp">:</span> <span class="${a?'ja':'jn'}">${v}</span>${c}`;
+    const c=i<re.length-1?',':'';
+    return `    "${k}": ${v}${c}`;
   });
   const dH = dims.map((d,i)=>{
     const sc=d.s[step].toFixed(2),cls=parseFloat(sc)>=0.6?'ja':'jn';
-    const pad=' '.repeat(Math.max(0,18-d.key.length)),comma=i<dims.length-1?',':'';
+    const comma=i<dims.length-1?',':'';
     const tr=d.trends[step],tc=tr==='→ stable'?'jgr':'ja';
-    return `      <span class="jk">"${d.key}"</span>${pad}<span class="jp">:</span> <span class="jp">{</span> <span class="jk">"score"</span><span class="jp">:</span> <span class="${cls}">${sc}</span><span class="jp">,</span> <span class="jk">"trend"</span><span class="jp">:</span> <span class="${tc}">"${tr}"</span> <span class="jp">}${comma}</span>`;
+    return `  <span class="jk">"${d.key}"</span>: { <span class="jk">"score"</span>: <span class="${cls}">${sc}</span>, <span class="jk">"trend"</span>: <span class="${tc}">"${tr}"</span> }${comma}`;
   });
   const L=[
     `<span class="jp">{</span>`,
-    `  <span class="jk">"wondi_analysis"</span><span class="jp">: {</span>`,
-    `    <span class="jk">"messages_analyzed"</span><span class="jp">:</span> <span class="jn">${analyzed}</span><span class="jp">,</span>`,``,
-    `    <span class="jk">"trajectory"</span><span class="jp">: {</span>`,
-    `      <span class="jk">"pattern"</span><span class="jp">:</span> <span class="js">"MASKED_DISTRESS_SIGNAL"</span><span class="jp">,</span>`,
-    `      <span class="jk">"risk_score_over_time"</span><span class="jp">: {</span>`,
-    ...rH,`      <span class="jp">},</span>`,
-    `      <span class="jk">"velocity"</span><span class="jp">:</span> <span class="js">"+0.22_per_message"</span><span class="jp">,</span>`,
-    fired?`      <span class="jk">"predicted_score_at_msg_12"</span><span class="jp">:</span> <span class="ja">0.94</span><span class="jp">,</span>`
-         :`      <span class="jk">"predicted_score_at_msg_12"</span><span class="jp">:</span> <span class="jgr">…computing</span><span class="jp">,</span>`,
-    `      <span class="jk">"keyword_flags_detected"</span><span class="jp">:</span> <span class="jgr">0</span>`,
-    `    <span class="jp">},</span>`,``,
-    `    <span class="jk">"clinical_dimensions"</span><span class="jp">: {</span>`,
-    ...dH,`    <span class="jp">},</span>`,``,
-    `    <span class="jk">"risk_classification"</span><span class="jp">: {</span>`,
-    `      <span class="jk">"immediate_crisis"</span><span class="jp">:</span>   <span class="jb">false</span><span class="jp">,</span>`,
-    fired?`      <span class="jk">"trajectory_concern"</span><span class="jp">:</span> <span class="ja">true</span><span class="jp">,</span>`
-         :`      <span class="jk">"trajectory_concern"</span><span class="jp">:</span> <span class="jb">false</span><span class="jp">,</span>`,
-    `      <span class="jk">"keyword_triggered"</span><span class="jp">:</span>  <span class="jgr">false</span>`,
-    `    <span class="jp">},</span>`,``,
-    `    <span class="jk">"recommended_action"</span><span class="jp">: {</span>`,
-    fired?`      <span class="jk">"type"</span><span class="jp">:</span>         <span class="ja">"SOFT_NUDGE"</span><span class="jp">,</span>`
-         :`      <span class="jk">"type"</span><span class="jp">:</span>         <span class="jgr">"MONITORING"</span><span class="jp">,</span>`,
-    fired?`      <span class="jk">"urgency"</span><span class="jp">:</span>       <span class="ja">"MONITOR_ESCALATE"</span><span class="jp">,</span>`
-         :`      <span class="jk">"urgency"</span><span class="jp">:</span>       <span class="js">"NON_URGENT"</span><span class="jp">,</span>`,
-    `      <span class="jk">"goal"</span><span class="jp">:</span>          <span class="js">"redirect_trajectory"</span><span class="jp">,</span>`,
-    `      <span class="jk">"escalate_to_human"</span><span class="jp">:</span> <span class="jb">false</span>`,
-    `    <span class="jp">}</span>`,`  <span class="jp">}</span>`,`<span class="jp">}</span>`,
+    ` <span class="jk">"wondi_analysis"</span><span class="jp">: {</span>`,
+    `  <span class="jk">"messages_analyzed"</span><span class="jp">:</span> <span class="jn">${analyzed}</span><span class="jp">,</span>`,
+    `  <span class="jk">"trajectory"</span><span class="jp">: {</span>`,
+    `   <span class="jk">"pattern"</span><span class="jp">:</span> <span class="js">"MASKED_DISTRESS_SIGNAL"</span><span class="jp">,</span>`,
+    `   <span class="jk">"risk_score_over_time"</span><span class="jp">: {</span>`,
+    ...rH.map(r=>`   ${r.replace(/("[\w_]+")/g,'<span class="jk">$1</span>').replace(/(0\.\d+)/g,(m)=>`<span class="${parseFloat(m)>=0.7?'ja':'jn'}">${m}</span>`)}`),
+    `   <span class="jp">},</span>`,
+    `   <span class="jk">"velocity"</span><span class="jp">:</span> <span class="js">"+0.22/msg"</span><span class="jp">,</span>`,
+    fired?`   <span class="jk">"predicted_at_12"</span><span class="jp">:</span> <span class="ja">0.94</span><span class="jp">,</span>`
+         :`   <span class="jk">"predicted_at_12"</span><span class="jp">:</span> <span class="jgr">…</span><span class="jp">,</span>`,
+    `   <span class="jk">"keyword_flags"</span><span class="jp">:</span> <span class="jgr">0</span>`,
+    `  <span class="jp">},</span>`,
+    `  <span class="jk">"clinical_dimensions"</span><span class="jp">: {</span>`,
+    ...dH,
+    `  <span class="jp">},</span>`,
+    `  <span class="jk">"risk_classification"</span><span class="jp">: {</span>`,
+    `   <span class="jk">"immediate_crisis"</span><span class="jp">:</span> <span class="jb">false</span><span class="jp">,</span>`,
+    fired?`   <span class="jk">"trajectory_concern"</span><span class="jp">:</span> <span class="ja">true</span><span class="jp">,</span>`
+         :`   <span class="jk">"trajectory_concern"</span><span class="jp">:</span> <span class="jb">false</span><span class="jp">,</span>`,
+    `   <span class="jk">"keyword_triggered"</span><span class="jp">:</span> <span class="jgr">false</span>`,
+    `  <span class="jp">},</span>`,
+    `  <span class="jk">"recommended_action"</span><span class="jp">: {</span>`,
+    fired?`   <span class="jk">"type"</span><span class="jp">:</span> <span class="ja">"SOFT_NUDGE"</span><span class="jp">,</span>`
+         :`   <span class="jk">"type"</span><span class="jp">:</span> <span class="jgr">"MONITORING"</span><span class="jp">,</span>`,
+    fired?`   <span class="jk">"urgency"</span><span class="jp">:</span> <span class="ja">"MONITOR_ESCALATE"</span><span class="jp">,</span>`
+         :`   <span class="jk">"urgency"</span><span class="jp">:</span> <span class="js">"NON_URGENT"</span><span class="jp">,</span>`,
+    `   <span class="jk">"escalate"</span><span class="jp">:</span> <span class="jb">false</span>`,
+    `  <span class="jp">}</span>`,
+    ` <span class="jp">}</span>`,
+    `<span class="jp">}</span>`,
   ];
   document.getElementById('json-area').innerHTML = L.map(l=>`<span class="jl">${l||' '}</span>`).join('\n');
 }
-const IDS=[`m1`,`m2`,`m3`,`m4`,`m5`,`m6`];
+const IDS=['m1','m2','m3','m4','m5','m6'];
 const T=[800,2000,3600,5000,6600,8200];
 const S=[1,1,3,3,5,5];
 let timers=[];
