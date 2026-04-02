@@ -516,12 +516,14 @@
         border-radius: 16px;
         box-shadow: 0 12px 40px rgba(0,0,0,0.08);
         transform: translateY(-120%);
-        transition: transform 0.3s ease;
+        visibility: hidden;
+        transition: transform 0.3s ease, visibility 0.3s;
         z-index: 999;
       }
 
       .nav-links.open {
         transform: translateY(0);
+        visibility: visible;
       }
 
       .hamburger {
